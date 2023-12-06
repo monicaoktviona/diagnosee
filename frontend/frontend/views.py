@@ -3,20 +3,22 @@ import requests
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 
 def frontend(request):
     return render(request, "index.html")
 
+@csrf_exempt 
 def search(request):
-    if request.method == 'POST':
-        query = request.POST.get('query')
-        hasil = get_serp(query)
-        context={
-            'serp': hasil['serp'],
-            'waktu': hasil['duration'],
-            'length': hasil['length'],
-        }
-        return render(request, 'result.html', context)
+    query = request.POST.get('query')
+    hasil = get_serp(query)
+    context={
+        'query': query,
+        'serp': hasil['serp'],
+        'waktu': hasil['duration'],
+        'length': hasil['length'],
+    }
+    return render(request, "result.html", context)
     
 def get_serp(query):
         api_url = f"https://asia-southeast2-jarkom-rahma.cloudfunctions.net/diagnosee-search/search?query={query}"

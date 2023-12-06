@@ -1,9 +1,9 @@
 function search() {
     $.ajax({
       method:'POST',
-      url:"/frontend/search",
+      url:"/search",
       data:{
-        query:$('#input-group').val(),
+        query:$('#query').val(),
       },
     });
   }

@@ -18,10 +18,22 @@
         <div class="image"></div>
         <div class="input-group rounded">
             <form class="d-flex" onsubmit="return false;" method="POST">
-                <input class="form-control me-2" id="query" name="query" type="search" placeholder="Search" aria-label="Search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
                 <input class="btn" id="button" type="submit" value="Search" onclick="search()">
               </form>
             </span>
+
+        <div class="flex-zero">
+            <div class="tracker">
+                <h1>
+                    Results for {{query}}
+                </h1>
+                <h1>
+                    Found {{length}} results for {{waktu}} s
+                </h1>
+            </div>
+        </div>
         </div>
         <!-- <nav class="navbar navbar-expand-sm sticky-top" style="padding-top:3px;padding-bottom:3px;">
 
