@@ -2,7 +2,10 @@
 
 import pickle
 import os
+from google.cloud import storage
 
+client_storage = storage.Client()
+bucket = client_storage.bucket("diagnosee-collections")
 
 class InvertedIndex:
     """
@@ -85,10 +88,10 @@ class InvertedIndex:
         https://docs.python.org/3/reference/datamodel.html#object.__enter__
         """
         # Membuka index file
-        self.index_file = open(self.index_file_path, 'rb+')
+        self.index_file = bucket.blob(self.index_file_path).open('rb')
 
         # Kita muat postings dict dan terms iterator dari file metadata
-        with open(self.metadata_file_path, 'rb') as f:
+        with bucket.blob(self.metadata_file_path).open('rb') as f:
             self.postings_dict, self.terms, self.doc_length = pickle.load(f)
             self.term_iter = self.terms.__iter__()
 
@@ -100,7 +103,7 @@ class InvertedIndex:
         self.index_file.close()
 
         # Menyimpan metadata (postings dict dan terms) ke file metadata dengan bantuan pickle
-        with open(self.metadata_file_path, 'wb') as f:
+        with bucket.blob(self.metadata_file_path).open('wb') as f:
             pickle.dump([self.postings_dict, self.terms, self.doc_length], f)
 
 
@@ -182,7 +185,7 @@ class InvertedIndexWriter(InvertedIndex):
     """
 
     def __enter__(self):
-        self.index_file = open(self.index_file_path, 'wb+')
+        self.index_file = bucket.blob(self.index_file_path).open('wb')
         return self
 
     def append(self, term, postings_list, tf_list):
@@ -241,30 +244,3 @@ class InvertedIndexWriter(InvertedIndex):
         self.index_file.write(encoded_postings)
         self.index_file.write(encoded_tf)
 
-
-if __name__ == "__main__":
-
-    from compression import VBEPostings
-
-    with InvertedIndexWriter('test', postings_encoding=VBEPostings, directory='tmp') as index:
-        index.append(1, [2, 3, 4, 8, 10], [2, 4, 2, 3, 30])
-        index.append(2, [3, 4, 5], [34, 23, 56])
-        index.index_file.seek(0)
-        assert index.terms == [1, 2], "terms salah"
-        assert index.doc_length == {
-            2: 2, 3: 38, 4: 25, 5: 56, 8: 3, 10: 30}, "doc_length salah"
-        assert index.postings_dict == {1: (0,
-                                           5,
-                                           len(VBEPostings.encode(
-                                               [2, 3, 4, 8, 10])),
-                                           len(VBEPostings.encode_tf([2, 4, 2, 3, 30]))),
-                                       2: (len(VBEPostings.encode([2, 3, 4, 8, 10])) + len(VBEPostings.encode_tf([2, 4, 2, 3, 30])),
-                                           3,
-                                           len(VBEPostings.encode([3, 4, 5])),
-                                           len(VBEPostings.encode_tf([34, 23, 56])))}, "postings dictionary salah"
-
-        index.index_file.seek(index.postings_dict[2][0])
-        assert VBEPostings.decode(index.index_file.read(
-            len(VBEPostings.encode([3, 4, 5])))) == [3, 4, 5], "terdapat kesalahan"
-        assert VBEPostings.decode_tf(index.index_file.read(
-            len(VBEPostings.encode_tf([34, 23, 56])))) == [34, 23, 56], "terdapat kesalahan"
