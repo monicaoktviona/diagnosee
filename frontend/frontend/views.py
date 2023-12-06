@@ -5,15 +5,19 @@ from django.shortcuts import render
 from django.core import serializers
 
 def frontend(request):
-    return render(request, "base.html")
+    return render(request, "index.html")
 
 def search(request):
     if request.method == 'POST':
         query = request.POST.get('query')
-        serp = get_serp(query)
-        return JsonResponse()
-    return HttpResponse('')
-
+        hasil = get_serp(query)
+        context={
+            'serp': hasil['serp'],
+            'waktu': hasil['duration'],
+            'length': hasil['length'],
+        }
+        return render(request, 'result.html', context)
+    
 def get_serp(query):
         api_url = f"https://asia-southeast2-jarkom-rahma.cloudfunctions.net/diagnosee-search/search?query={query}"
 
