@@ -1,8 +1,6 @@
-import json
 import requests
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
-from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
 def frontend(request):
