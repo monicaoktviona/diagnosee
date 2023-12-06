@@ -6,11 +6,15 @@ from scipy.spatial.distance import cosine
 import lightgbm as lgb
 import numpy as np
 import random
+from google.cloud import storage
+
+client_storage = storage.Client()
+bucket = client_storage.bucket("diagnosee-collections")
 
 # process dataset yang digunakan untuk training
 def get_dataset():
     documents = {}
-    with open("qrels-folder/train_docs.txt", encoding="utf-8") as file:
+    with bucket.blob("qrels-folder/train_docs.txt").open("r") as file:
         for line in file:
             idx = line.find(" ")
             doc_id = line[:idx]
@@ -37,7 +41,7 @@ class Data:
 
     # mendapatkan query
     def get_queries(self):
-        with open(f"qrels-folder/{self.type}_queries.txt", encoding="utf-8") as file:
+        with bucket.blob(f"qrels-folder/{self.type}_queries.txt").open("r") as file:
             for line in file:
                 idx = line.find(" ")
                 q_id = line[:idx]
@@ -46,7 +50,7 @@ class Data:
     
     # mendapatkan qrel yang dikelompokkan berdasarkan q_id    
     def get_qrels(self):
-        with open(f"qrels-folder/{self.type}_qrels.txt", encoding="utf-8") as file:
+        with bucket.blob(f"qrels-folder/{self.type}_qrels.txt").open("r") as file:
             for line in file:
                 q_id, doc_id, rel = line.split()
                 if (q_id in self.queries) and (doc_id in self.documents):

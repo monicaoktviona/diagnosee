@@ -16,8 +16,10 @@ import re
 from mpstemmer import MPStemmer
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 
-from operator import itemgetter
+from google.cloud import storage
 
+client_storage = storage.Client()
+bucket = client_storage.bucket("diagnosee-collections")
 
 class BSBIIndex:
     """
@@ -33,10 +35,9 @@ class BSBIIndex:
     index_name(str): Nama dari file yang berisi inverted index
     """
 
-    def __init__(self, data_dir, output_dir, postings_encoding, index_name="main_index"):
+    def __init__(self, output_dir, postings_encoding, index_name="main_index"):
         self.term_id_map = IdMap()
         self.doc_id_map = IdMap()
-        self.data_dir = data_dir
         self.output_dir = output_dir
         self.index_name = index_name
         self.postings_encoding = postings_encoding
@@ -57,11 +58,11 @@ class BSBIIndex:
     def load(self):
         """Memuat doc_id_map and term_id_map dari output directory"""
 
-        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), self.output_dir, 'terms.dict'), 'rb') as f:
+        with bucket.blob(os.path.join(self.output_dir, 'terms.dict')).open('rb') as f:
             self.term_id_map = pickle.load(f)
-        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), self.output_dir, 'docs.dict'), 'rb') as f:
+        with bucket.blob(os.path.join(self.output_dir, 'docs.dict')).open('rb') as f:
             self.doc_id_map = pickle.load(f)
-        with InvertedIndexReader(self.index_name, self.postings_encoding, directory=os.path.join(os.path.dirname(os.path.realpath(__file__)), self.output_dir)) as merged_index:
+        with InvertedIndexReader(self.index_name, self.postings_encoding, directory=self.output_dir) as merged_index:
             self.doc_length = merged_index.doc_length
             self.avg_doc_length = sum(self.doc_length.values()) / len(self.doc_length)
         
@@ -211,6 +212,7 @@ class BSBIIndex:
         merged_index.append(curr, postings, tf_list)
 
     def retrieve(self, query):
+        self.load()
         # melakukan preprocessing untuk query
         clean_query = self.pre_processing_text(query)
 
@@ -218,7 +220,7 @@ class BSBIIndex:
         query_postings = []
         
         # membaca file index
-        with InvertedIndexReader(self.index_name, self.postings_encoding, directory=os.path.join(os.path.dirname(os.path.realpath(__file__)), self.output_dir)) as merged_index:
+        with InvertedIndexReader(self.index_name, self.postings_encoding, directory=self.output_dir) as merged_index:
 
             # mendapatkan postings list untuk setiap term di query
             for word in clean_query:
