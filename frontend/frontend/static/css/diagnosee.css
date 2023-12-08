@@ -1,0 +1,33 @@
+body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body {
+    text-align: center;
+}
+
+.logo img {
+    max-width: 100%;
+    margin-bottom: 0px !important;
+}
+
+.input-group {
+    margin-top: 0px !important;
+}
+
+.custom-width {
+    width: 500px; 
+}
+
+.content {
+    margin: 0 !important;
+}
+
+.logo {
+    margin-bottom: 6px !important;
+}
+

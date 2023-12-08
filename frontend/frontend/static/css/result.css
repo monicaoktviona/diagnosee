@@ -1,0 +1,71 @@
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    margin: 0;
+}
+
+.card {
+    max-width: 750px;
+    margin: 0 auto 20px; 
+}
+
+h1 {
+    color: red;
+}
+
+.input-group {
+    margin-top: 20px !important;
+    /* background-color: red; */
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    width: 100%;
+    padding-left: 20vw;
+    padding-right: 20vw;
+}
+
+
+.read-more-link {
+    color: #371fc2;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.read-more-container {
+    text-align: right;
+}
+
+.center-content {
+    display: inline-block;
+}
+
+form {
+    margin-top: 10px;
+}
+
+#query-result, .card-header {
+    color: #371fc2;
+}
+
+#result-description{
+    font-size: 14px;
+    margin-top: 5px;
+    color:rgb(143, 143, 143);
+    
+}
+
+.highlight {
+    color: blue;
+    font-weight: bold;
+}

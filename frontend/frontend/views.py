@@ -21,7 +21,8 @@ def search(request):
                 'waktu': hasil['duration'],
                 'length': hasil['length'],
             }
-    return render(request, "result.html", context)
+            return render(request, "result.html", context)
+    print("here")
     
 def get_serp(query):
         api_url = f"https://asia-southeast2-jarkom-rahma.cloudfunctions.net/diagnosee-search/search?query={query}"

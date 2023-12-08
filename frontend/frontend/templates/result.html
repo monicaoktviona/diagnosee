@@ -1,50 +1,71 @@
 {% load static %}
+{% load bootstrap_icons %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-        <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-        <link rel="icon" type="image/ico" href="{% static 'images/diagnosee-logo.ico' %}">
-        <link rel="stylesheet" href="{% static 'css/index.css' %}">
-        {% block meta %}
-        {% endblock meta %}
-    </head>
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="icon" type="image/ico" href="{% static 'images/diagnosee-logo.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/result.css' %}">
+    {% block meta %}
+    {% endblock meta %}
+</head>
 
-
-    <body>
-        <div class="image"></div>
-        <div class="input-group rounded">
-            <form class="d-flex" onsubmit="return false;" method="POST">
-                <input class="form-control me-2" id="query" name="query" type="search" placeholder="Search" aria-label="Search">
-                <input class="btn" id="button" type="submit" value="Search" onclick="search()">
-                </form>
-            </span>
-            <h1>
-                Results for {{query}}
-            </h1>
-            <h1>
-                Found {{length}} results for {{waktu}} s
-            </h1>
+<body>
+    <div class="input-group rounded">
+        <div class="center-content">
+            <a href="{% url 'frontend:frontend' %}"><img id="diagnosee-text" src="{% static 'images/diagnosee-text.png' %}" alt="Diagnosee Text" width="200"></a>            
+            <form class="d-flex" action="/search" method="POST">
+                <input class="form-control me-2 custom-width" id="query" name="query" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn" id="button" type="submit">
+                    {% bs_icon 'search' size='1.5em' color='#271494'%}
+                </button>
+            </form>
         </div>
+    </div>
+    <p id="result-description">Found <b>{{ length }}</b> results for <b><span id="query-result">{{ query }}</span></b> in <b>{{ waktu }}</b> seconds</p>
 
-        <!-- <nav class="navbar navbar-expand-sm sticky-top" style="padding-top:3px;padding-bottom:3px;">
+    <div id="card-container">
+        {% if serp %}
+            {% for key, value in serp.items %}
+                <div class="card">
+                    <h5 class="card-header"><b>{{ key }}.txt</b></h5>
+                    <div class="card-body">
+                        <p class="card-text" id="content{{ forloop.counter }}">{{ value|truncatewords:"30" }}</p>
+                        <p class="card-text" id="fullContent{{ forloop.counter }}" style="display: none;">{{ value }}</p>
+                        <div class="read-more-container">
+                            <a href="javascript:void(0);" onclick="toggleContent({{ forloop.counter }})" class="read-more-link" id="toggleBtn{{ forloop.counter }}">Read more</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
 
-        </nav>
+    <script>
+        function toggleContent(index) {
+            var content = document.getElementById('content' + index);
+            var fullContent = document.getElementById('fullContent' + index);
+            var toggleBtn = document.getElementById('toggleBtn' + index);
 
-        <main>
-        {% block content %}
-        {% endblock content %}
-        </main>
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                fullContent.style.display = 'none';
+                toggleBtn.innerHTML = 'Read more';
+            } else {
+                content.style.display = 'none';
+                fullContent.style.display = 'block';
+                toggleBtn.innerHTML = 'Hide';
+            }
+        }
+    </script>
+</body>
 
-        <footer>
-            <p class="copyright">© 2022 Kelompok C-05</p>
-            <p class="mata-kuliah">Platform-based Programming
-                Odd Semester 2022/2023</p>
-        </footer> -->
-    </body>
 </html>
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
