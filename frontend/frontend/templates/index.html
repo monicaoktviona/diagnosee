@@ -17,7 +17,7 @@
     <body>
         <div class="image"></div>
         <div class="input-group rounded">
-            <form class="d-flex" onsubmit="return false;" method="POST">
+            <form class="d-flex" action="/search" method="POST">
                 <input class="form-control me-2" id="query" name="query" type="search" placeholder="Search" aria-label="Search">
                 <input class="btn" id="button" type="submit" value="Search" onclick="search()">
               </form>
@@ -40,6 +40,6 @@
     </body>
 </html>
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+{% comment %} <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<script src="{% static 'js/index.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/index.js' %}" type="text/javascript"></script> {% endcomment %}

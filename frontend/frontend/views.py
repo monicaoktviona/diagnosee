@@ -2,20 +2,25 @@ import requests
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from frontend.forms import Query
 
+@csrf_exempt 
 def frontend(request):
     return render(request, "index.html")
 
 @csrf_exempt 
 def search(request):
-    query = request.POST.get('query')
-    hasil = get_serp(query)
-    context={
-        'query': query,
-        'serp': hasil['serp'],
-        'waktu': hasil['duration'],
-        'length': hasil['length'],
-    }
+    if request.method=="POST":
+        form = Query(request.POST)
+        if form.is_valid():
+            query = request.POST.get('query')
+            hasil = get_serp(query)
+            context={
+                'query': query,
+                'serp': hasil['serp'],
+                'waktu': hasil['duration'],
+                'length': hasil['length'],
+            }
     return render(request, "result.html", context)
     
 def get_serp(query):
