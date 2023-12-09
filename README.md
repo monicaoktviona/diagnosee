@@ -6,5 +6,8 @@ A medical search engine as a submission for CSUI's Information Retrieval 2023/20
 2. Rahma Adinda Putri  (2106750774)
 
 ### Backend
-https://asia-southeast2-jarkom-rahma.cloudfunctions.net/diagnosee-search/search?query={query}
-example: https://asia-southeast2-jarkom-rahma.cloudfunctions.net/diagnosee-search/search?query=batuk
+https://asia-southeast2-jarkom-rahma.cloudfunctions.net/diagnosee-search/search?query={query}<br>
+example: https://asia-southeast2-jarkom-rahma.cloudfunctions.net/diagnosee-search/search?query=pilek
+
+### Frontend
+http://35.196.205.49:8000/
